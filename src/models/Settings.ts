@@ -4,6 +4,7 @@ export interface ISettings {
   resendApiKey: string;
   fromEmail: string;
   fromName?: string;
+  replyTo?: string;
   updatedAt?: Date;
 }
 
@@ -12,6 +13,7 @@ const SettingsSchema = new Schema<ISettings>(
     resendApiKey: { type: String, required: true },
     fromEmail: { type: String, required: true },
     fromName: { type: String, default: "" },
+    replyTo: { type: String, default: "" },
   },
   { timestamps: true }
 );

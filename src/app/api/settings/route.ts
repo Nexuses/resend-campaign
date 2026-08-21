@@ -12,6 +12,7 @@ export async function GET() {
         configured: false,
         fromEmail: "",
         fromName: "",
+        replyTo: "",
         hasApiKey: false,
       });
     }
@@ -20,6 +21,7 @@ export async function GET() {
       configured: true,
       fromEmail: settings.fromEmail,
       fromName: settings.fromName || "",
+      replyTo: settings.replyTo || "",
       hasApiKey: Boolean(settings.resendApiKey),
       // Masked preview of API key for UI
       apiKeyPreview: settings.resendApiKey
@@ -35,10 +37,11 @@ export async function GET() {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { resendApiKey, fromEmail, fromName } = body as {
+    const { resendApiKey, fromEmail, fromName, replyTo } = body as {
       resendApiKey?: string;
       fromEmail?: string;
       fromName?: string;
+      replyTo?: string;
     };
 
     if (!fromEmail || typeof fromEmail !== "string") {
@@ -69,6 +72,7 @@ export async function PUT(request: Request) {
         resendApiKey: nextKey,
         fromEmail: fromEmail.trim(),
         fromName: (fromName || "").trim(),
+        replyTo: (replyTo || "").trim(),
       },
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
@@ -77,6 +81,7 @@ export async function PUT(request: Request) {
       ok: true,
       fromEmail: settings.fromEmail,
       fromName: settings.fromName || "",
+      replyTo: settings.replyTo || "",
       hasApiKey: true,
       apiKeyPreview: `${settings.resendApiKey.slice(0, 6)}…${settings.resendApiKey.slice(-4)}`,
     });

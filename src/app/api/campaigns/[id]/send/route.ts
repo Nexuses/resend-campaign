@@ -73,6 +73,7 @@ export async function POST(_request: Request, { params }: Params) {
           to: contact.email,
           subject,
           html,
+          ...(settings.replyTo ? { replyTo: settings.replyTo } : {}),
         });
 
         if (result.error) {

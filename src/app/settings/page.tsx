@@ -6,6 +6,7 @@ import { AppNav } from "@/app/components/AppNav";
 type SettingsState = {
   fromEmail: string;
   fromName: string;
+  replyTo: string;
   hasApiKey: boolean;
   apiKeyPreview?: string;
   configured?: boolean;
@@ -15,6 +16,7 @@ export default function SettingsPage() {
   const [apiKey, setApiKey] = useState("");
   const [fromEmail, setFromEmail] = useState("");
   const [fromName, setFromName] = useState("");
+  const [replyTo, setReplyTo] = useState("");
   const [preview, setPreview] = useState("");
   const [hasKey, setHasKey] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,6 +32,7 @@ export default function SettingsPage() {
         if (!res.ok) throw new Error(data.error || "Failed to load");
         setFromEmail(data.fromEmail || "");
         setFromName(data.fromName || "");
+        setReplyTo(data.replyTo || "");
         setHasKey(Boolean(data.hasApiKey));
         setPreview(data.apiKeyPreview || "");
       } catch (err) {
@@ -55,6 +58,7 @@ export default function SettingsPage() {
           resendApiKey: apiKey || undefined,
           fromEmail,
           fromName,
+          replyTo,
         }),
       });
       const data = await res.json();
@@ -62,6 +66,7 @@ export default function SettingsPage() {
 
       setHasKey(true);
       setPreview(data.apiKeyPreview || "");
+      setReplyTo(data.replyTo || "");
       setApiKey("");
       setMessage("Settings saved. You can blast campaigns now.");
     } catch (err) {
@@ -138,6 +143,23 @@ export default function SettingsPage() {
                 placeholder="Your Company"
                 className="mt-2 w-full rounded-lg border border-[var(--line)] px-3 py-2.5 outline-none ring-[var(--accent)] focus:ring-2"
               />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium" htmlFor="replyTo">
+                Reply-to (optional)
+              </label>
+              <input
+                id="replyTo"
+                type="email"
+                value={replyTo}
+                onChange={(e) => setReplyTo(e.target.value)}
+                placeholder="replies@yourdomain.com"
+                className="mt-2 w-full rounded-lg border border-[var(--line)] px-3 py-2.5 outline-none ring-[var(--accent)] focus:ring-2"
+              />
+              <p className="mt-1.5 text-xs text-[var(--muted)]">
+                If set, replies go to this address instead of the from email.
+              </p>
             </div>
 
             {error ? (
